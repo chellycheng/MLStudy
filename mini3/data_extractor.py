@@ -56,27 +56,27 @@ np.savetxt("test_flattened_out.csv",test_flat, delimiter =",")
 Daisy Features
 """
 
-print "Daisy: Saving features' loop for train"
+print ("Daisy: Saving features' loop for train")
 daisy_features_train_set = np.zeros((len(x),104))
 for i in range(len(x)):
     descs, descs_img = daisy(x[i], step=180, radius=20, rings=2, histograms=6,
                          orientations=8, visualize=True)
     daisy_features_train_set[i] = descs.reshape((1,104))
 
-print daisy_features_train_set.shape
+print (daisy_features_train_set.shape)
 
 np.savetxt("train_daisy.csv",daisy_features_train_set, delimiter =",")
 
 
 
-print "Daisy: Saving features' loop for test"
+print ("Daisy: Saving features' loop for test")
 daisy_features_test_set = np.zeros((len(test),104))
 for i in range(len(test)):
     descs, descs_img = daisy(test[i], step=180, radius=20, rings=2, histograms=6,
                          orientations=8, visualize=True)
     daisy_features_test_set[i] = descs.reshape((1,104))
 
-print daisy_features_test_set.shape
+print (daisy_features_test_set.shape)
 
 np.savetxt("test_daisy.csv",daisy_features_test_set, delimiter =",")
 
@@ -85,26 +85,26 @@ np.savetxt("test_daisy.csv",daisy_features_test_set, delimiter =",")
 HoG Features
 """
 
-print "HoG: Saving features' loop for train"
+print( "HoG: Saving features' loop for train")
 hog_features_train_set = np.zeros((len(x),3600))
 for i in range(len(x)):
     fd, hog_image = hog(x[i], orientations=16, pixels_per_cell=(4, 4),
                     cells_per_block=(1, 1), visualise=True)
     hog_features_train_set[i] = fd.reshape((1,3600))
 
-print hog_features_train_set.shape
+print (hog_features_train_set.shape)
 
 np.savetxt("train_hog.csv",hog_features_train_set, delimiter =",")
 
 
 
-print "HoG: Saving features' loop for test"
+print ("HoG: Saving features' loop for test")
 hog_features_test_set = np.zeros((len(test),3600))
 for i in range(len(test)):
     fd, hog_image = hog(test[i], orientations=16, pixels_per_cell=(4, 4),
                     cells_per_block=(1, 1), visualise=True)
     hog_features_test_set[i] = fd.reshape((1,3600))
 
-print hog_features_test_set.shape
+print (hog_features_test_set.shape)
 
 np.savetxt("test_hog.csv",hog_features_test_set, delimiter =",")
