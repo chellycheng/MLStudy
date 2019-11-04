@@ -54,17 +54,14 @@ class MyDataset(torch.utils.data.Dataset):
 
 class Net(nn.Module):
     def __init__(self,in_dim,n_class):
-    #TODO:愚蠢的参数计算
         super(Net,self) .__init__()
         self.conv = nn.Sequential(
-            nn.Conv2d(in_dim, 10, kernel_size=5, stride=1),
-            # input shape(1*128*128),(128-5)/1+1=124 卷积后输出（10*124*124）
-            # 输出图像大小计算公式:(n*n像素的图）(n+2p-k)/s+1
-            nn.ReLU(True),  # 激活函数
-            nn.MaxPool2d(2, 2),  # 28/2=14 池化后（10*62*62）
-            nn.Conv2d(10, 20, 5, stride=1, padding=0),  # (62-5)/1+1=58 卷积后（20*58*58）
+            nn.Conv2d(in_dim, 10, kernel_size=5, stride=1),# input shape(1*128*128),(128-5)/1+1=124
             nn.ReLU(True),
-            nn.MaxPool2d(2, 2)  # 池化后（20*29*29)，the input of full connection
+            nn.MaxPool2d(2, 2),
+            nn.Conv2d(10, 20, 5, stride=1, padding=0),  # (62-5)/1+1=58
+            nn.ReLU(True),
+            nn.MaxPool2d(2, 2)  # the input of full connection
         )
         self.fc = nn.Sequential(  # full connection layers.
             nn.Linear(20*29*29, 120),
@@ -102,21 +99,21 @@ def train():
                                   num_workers=4)
     net = Net(1, 10)
     # loss function
-    criterion = torch.nn.MSELoss(size_average=False)
+    criterion = nn.CrossEntropyLoss().cuda()
     # optimizer
     optimizer = torch.optim.SGD(net.parameters(), lr=1e-4)
     print('Start Training')
     for epoch in range(epochs):  # loop over the dataset multiple times
 
         running_loss = 0.0
-        for i, data in enumerate(train_dataloader, 0):
-            # get the inputs; data is a list of [inputs, labels]
-            inputs, labels = data
+        for i, (pic, label)in enumerate(train_dataloader):
+            label = label.cuda()
+            pic = pic.cuda()
             # zero the parameter gradients
             optimizer.zero_grad()
             # forward + backward + optimize
-            outputs = net(inputs)
-            loss = criterion(outputs, labels)
+            outputs = net(pic)
+            loss = criterion(outputs, label)
             loss.backward()
             optimizer.step()
             # print statistics

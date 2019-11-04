@@ -1,3 +1,4 @@
+
 import sklearn
 from skimage.feature import daisy
 import matplotlib.pyplot as plt
@@ -27,21 +28,22 @@ class classifier:
         self.y_test = y_test
 
     def svm(self, c):
-        # n_estimators = 10
         model = LinearSVC(C=c, class_weight='balanced')
         print("start fitting")
         model.fit(self.x_train, self.y_train)
         preds = model.predict(self.x_test)
         scores3 = cross_val_score(model, self.x_train, self.y_train, cv=5, scoring='accuracy')
         print("Score of svm", scores3.mean() * 100)
-        print("Score of svm", metrics.accuracy_score(self.y_test, preds))
-        return preds
+        #print("Score of svm", metrics.accuracy_score(self.y_test, preds))
+        #return preds
 
     def KNeighbors(self, iter):
         model = KNeighborsClassifier(n_neighbors=iter, weights='uniform', algorithm='auto', n_jobs=-1)
         model.fit(self.x_train, self.y_train)
         predict = model.predict(self.x_test)
-        print(" kneighbors Regression : accurancy_is", metrics.accuracy_score(self.y_test, predict))
+        scores3 = cross_val_score(model, self.x_train, self.y_train, cv=5, scoring='accuracy')
+        print("Score of svm", scores3.mean() * 100)
+        #print(" kneighbors Regression : accurancy_is", metrics.accuracy_score(self.y_test, predict))
 
 class Feature_Processer:
     def split(self, features_set, target_set, ratio):
@@ -63,7 +65,7 @@ class Feature_Processer:
         kps, dsc = alg.compute(image, kps)
         # Flatten all of them in one big vector - our feature vector
         dsc = dsc.flatten()
-        # Making descriptor of same size
+        # Making descriptor of same sizepip3 install torch torchvision
         # Descriptor vector size is 64
         needed_size = (vector_size * 64)
         if dsc.size < needed_size:
@@ -137,6 +139,3 @@ if __name__ == '__main__':
 # data stucture is every index is a picture total(50000, 128, 128)
 #in total
 
-
-
-#X_train[0:1].show()
