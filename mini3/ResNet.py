@@ -24,17 +24,17 @@ from keras.preprocessing.image import ImageDataGenerator
 class MyDataset(torch.utils.data.Dataset):
     def __init__(self, lable, transform):
         if lable == 'train':
-            self.images = pd.read_pickle('../input/modified-mnist/train_max_x').reshape(50000, 1, 128, 128)
+            self.images = pd.read_pickle('train_max_x').reshape(50000, 1, 128, 128)
             # tmp = pd.read_csv('../input/modified-mnist/train_max_y.csv', encoding='utf-8')
             # tmp = to_categorical((tmp['Label']), num_classes=10, dtype='long')
             datagen.fit(self.images)
             print(self.images.shape)
 
-            self.labels = [x for [y, x] in pd.read_csv('../input/modified-mnist/train_max_y.csv').to_numpy()]
+            self.labels = [x for [y, x] in pd.read_csv('train_max_y.csv').to_numpy()]
         elif lable == 'test':
-            self.images = pd.read_pickle('../input/modified-mnist/test_max_x').reshape(10000, 1, 128, 128)
+            self.images = pd.read_pickle('test_max_x').reshape(10000, 1, 128, 128)
             self.labels = None
-            datagen.fit(self.images)
+            #datagen.fit(self.images)
 
         self.transform = transform
 
