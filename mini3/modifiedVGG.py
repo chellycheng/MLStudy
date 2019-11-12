@@ -50,12 +50,14 @@ class MyDataset(torch.utils.data.Dataset):
     def __init__(self, lable, transform):
         if lable == 'train':
             self.images = pd.read_pickle('../input/modified-mnist/train_max_x')
-            self.images = self.images.reshape(50000, 1, 128, 128)
+            self.images = self.images
+            np.place(self.images,self.images<180,0)
             self.labels = [x for [y, x] in pd.read_csv('../input/modified-mnist/train_max_y.csv').to_numpy()]
 
         elif lable == 'test':
             self.images = pd.read_pickle('../input/modified-mnist/test_max_x')
-            self.images = self.images.reshape(50000, 1, 128, 128)
+            self.images = self.images
+            np.place(self.images, self.images < 180, 0)
             self.labels = None
 
         self.transform = transform
@@ -73,8 +75,8 @@ class MyDataset(torch.utils.data.Dataset):
 
         if self.transform is not None:
             image = self.transform(image)
-            image -= image.mean()
-            image /= image.std()
+            #image -= image.mean()
+            #image /= image.std()
             image /= 255
 
         return image, label
