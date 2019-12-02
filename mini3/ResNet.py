@@ -6,15 +6,15 @@ import pandas as pd
 import numpy as np
 from keras.utils import to_categorical
 from torchvision.models.resnet import ResNet, BasicBlock
-
 from tqdm import tqdm_notebook as tqdm
-
-
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import inspect
 import time
 from torch import nn, optim
 import torch
+from torchsummary import summary
+
+import hiddenlayer as hl
 from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 from torch.utils.data import DataLoader
 from keras.preprocessing.image import ImageDataGenerator
@@ -83,6 +83,10 @@ class MnistResNet (ResNet):
     def forward(self, x):
         return torch.softmax( super(MnistResNet, self).forward(x), dim=-1)
 
+# training loop + eval loop
+
+'''
+
 
 
 tf = Compose([Resize((224, 224)), ToTensor()])
@@ -106,10 +110,6 @@ val_loader = DataLoader(train_set,
                               sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:])
                      )
 
-
-
-
-
 start_ts = time.time()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -125,7 +125,7 @@ optimizer = optim.Adadelta(model.parameters())
 batches = len(train_loader)
 val_batches = len(val_loader)
 
-# training loop + eval loop
+
 for epoch in range(epochs):
     total_loss = 0
     progress = tqdm(enumerate(train_loader), desc="Loss: ", total=batches)
@@ -169,5 +169,15 @@ for epoch in range(epochs):
         f"Epoch {epoch + 1}/{epochs}, training loss: {total_loss / batches}, validation loss: {val_losses / val_batches}")
     print_scores(precision, recall, f1, accuracy, val_batches)
     losses.append(total_loss / batches)
-print(losses)
+print(losses)'''
+def sum():
+    model = MnistResNet ()
+    summary(model, input_size=(1, 128, 128))
+    graph= hl.build_graph(model, torch.zeros([1, 1, 128, 128]))
+    graph.save("LeNet5")
+
+if __name__ == '__main__':
+    sum()
+
+
 # print(f"Training time: {time.time() - start_ts}s")
