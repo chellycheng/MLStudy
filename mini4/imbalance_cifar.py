@@ -85,7 +85,7 @@ if __name__ == '__main__':
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    trainset = IMBALANCECIFAR100(root='./data', train=True,
+    trainset = IMBALANCECIFAR10(root='./data', train=True,
                                  download=True, transform=transform)
     trainloader = iter(trainset)
     data, label = next(trainloader)
