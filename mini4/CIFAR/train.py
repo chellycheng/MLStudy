@@ -27,7 +27,7 @@ from losses import FocalLoss
 
 
 
-
+###############################
 ################################
 def train(train_loader, model, criterion, optimizer):
 
@@ -54,6 +54,7 @@ def train(train_loader, model, criterion, optimizer):
         print("loss: %s" %(total_loss/(i+1)))
     torch.cuda.empty_cache()
 ###############################################
+#################################################
 def validate (val_loader, model, criterion, epoch, flag='val'):
     val_losses = 0
     model.eval()
@@ -94,6 +95,12 @@ def validate (val_loader, model, criterion, epoch, flag='val'):
 
     return acc
 ##############################################
+##############################################
+
+
+
+
+
 
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
@@ -107,13 +114,15 @@ transform_val = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
+
+
+
 # 'exp', imb_factor=0.01, rand_number=0,
 train_dataset = IMBALANCECIFAR10(root='./data', imb_type='exp', imb_factor=0.01,
                                  rand_number=0, train=True,
                                  transform=transform_train)
 
 val_dataset = datasets.CIFAR10(root='./data', train=False, transform=transform_val)
-
 
 print(len(train_dataset))  #20431
 print(len(val_dataset))  #10000
@@ -122,6 +131,9 @@ cls_num_list = train_dataset.get_cls_num_list()
 print('cls num list:')
 print(cls_num_list)
 #args.cls_num_list = cls_num_list
+
+
+
 
 
 #define train rule
@@ -144,6 +156,9 @@ else:
     warnings.warn('Sample rule is not listed')
 
 
+    
+       
+    
 # define loss function: focal loss, cross entropy
 loss_type = 'CE'
 criterion = None
@@ -164,18 +179,9 @@ val_loader = torch.utils.data.DataLoader(
     num_workers=2, pin_memory=True)
 
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-model = models.resnet32(num_classes=len(cls_num_list), use_norm=True).to(device)
-optimizer = torch.optim.SGD(model.parameters(), 0.1,
-                                momentum=0.1,
-                                weight_decay=1e-4)
 
-losses = []
-epochs = 200
 
-start_ts = time.time()
-batches = len(train_loader)
-val_batches = len(val_loader)
+
 
 def adjust_learning_rate(optimizer, epoch, lr):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
@@ -190,6 +196,30 @@ def adjust_learning_rate(optimizer, epoch, lr):
         lr = lr
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
+
+
+
+
+
+
+
+
+##########################################
+# training and evaluation loop
+##########################################
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model = models.resnet32(num_classes=len(cls_num_list), use_norm=True).to(device)
+optimizer = torch.optim.SGD(model.parameters(), 0.1,
+                                momentum=0.1,
+                                weight_decay=1e-4)
+
+losses = []
+epochs = 200
+
+start_ts = time.time()
+batches = len(train_loader)
+val_batches = len(val_loader)
 
 
 for epoch in range(0, epochs+1):
