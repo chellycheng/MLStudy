@@ -87,8 +87,8 @@ if __name__ == '__main__':
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     trainset = IMBALANCECIFAR10(root='./data', train=True,
                                  download=True, transform=transform)
+
     trainloader = iter(trainset)
     data, label = next(trainloader)
     import pdb;
-
     pdb.set_trace()
