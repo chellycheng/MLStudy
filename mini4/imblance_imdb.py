@@ -2,6 +2,7 @@ import string
 
 import torch
 import numpy as np
+from nltk import WordNetLemmatizer
 from nltk.corpus import stopwords
 from torchtext import data
 from torchtext import datasets
@@ -16,6 +17,16 @@ LABEL = data.LabelField(dtype=torch.float)
 """
         Call get_dataset and makeImbalance in order to produce the imbalanced dataset
     """
+"""
+    Instruction:
+    In main
+        1. get_dataset()
+        2. makeImbalance() with your path in directory
+        3. get_vocab()  get the vocab file, the vocab should be around
+            you could set keep tokens with > 5 occurrence by modifying min_occurance or choose the most common 50000 one 
+        3. get_positivie_negative() generate the imbalanced data set according to the vocab
+        3. get_positivie_negative_test() generate the balanced data set according to the vocab 
+"""
 def get_dataset():
 
     train_data, test_data = datasets.IMDB.splits(TEXT, LABEL)
@@ -42,6 +53,7 @@ class load_imbalance_data_from_dictory():
     def clean_doc(self,doc,act):
         # split into tokens by white space
         tokens = doc.split()
+        lemmatizer = WordNetLemmatizer()
         if act:
             # remove punctuation from each token
             table = str.maketrans('', '', string.punctuation)
@@ -53,6 +65,7 @@ class load_imbalance_data_from_dictory():
             tokens = [w for w in tokens if not w in stop_words]
             # filter out short tokens
             tokens = [word for word in tokens if len(word) > 1]
+            tokens = [lemmatizer.lemmatize(word) for word in tokens]
 
         return tokens
 
@@ -130,8 +143,8 @@ def get_vocab():
 
     # keep tokens with > 5 occurrence
     # possible change here
-    # min_occurane = 5
-    # tokens = [k for k, c in vocab.items() if c >= min_occurane]
+    min_occurane = 5
+    tokens = [k for k, c in vocab.items() if c >= min_occurane]
 
     tokens = [k for k, c in vocab.items()]
     print(len(tokens))
